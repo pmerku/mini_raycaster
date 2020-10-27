@@ -2,23 +2,30 @@
 NAME			= mini_raycaster
 
 # Compiler
-CFLAGS			= -std=c++17 -O2
-LDFLAGS			= -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
-DFLAGS			= -g
-CC++ 			= clang++
+CFLAGS			= -O3
+LDFLAGS			= -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lm
+DFLAGS			=
+
+#ifdef DEBUG
+DFLAGS			+= -g
+#endif
+
+CC				= clang
 # Files
 SRC_DIR			= src
 OUT_DIR			= out
 INC_DIR			= include
 SRC				= main.c
-HEADERS			=
+HEADERS			= raycaster.h
 
 LIBDIR			= lib
 LIBFT			= lib/libft.a
 INC_LIBFT		= lib/include
 
 # Sub-modules
-#include src/.mk
+include src/engine/engine.mk
+include src/parser/parser.mk
+include src/sdl/sdl.mk
 
 # Fix sources and headers
 OBJ				= $(patsubst %.c,%.o,$(SRC))
@@ -29,40 +36,46 @@ DARK_GREEN		= \033[0;32m
 GREEN			= \033[0;92m
 END				= \033[0;0m
 
-PREFIX			= $(DARK_GREEN)$(NAME) $(END)\xc2\xbb
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	PREFIX			= $(DARK_GREEN)$(NAME) $(END)>>
+endif
+ifeq ($(UNAME_S),Darwin)
+	PREFIX			= $(DARK_GREEN)$(NAME) $(END)\xc2\xbb
+endif
 
 all: $(NAME)
 
 deps:
-	@echo "$(SRC)"
+	@printf "$(SRC)\n"
 
 $(NAME): $(addprefix $(OUT_DIR)/,$(OBJ)) $(LIBFT)
-	@echo "$(PREFIX)$(GREEN) Bundling objects...$(END)"
-	@$(CC++) $(CFLAGS) $(DFLAGS) $(LDFLAGS) -I$(INC_DIR) -I$(INC_LIBFT) -o $@ $(addprefix $(OUT_DIR)/,$(OBJ)) -L$(LIBDIR) -lft
+	@printf "$(PREFIX)$(GREEN) Bundling objects...$(END)\n"
+	@$(CC) $(CFLAGS) $(DFLAGS) $(LDFLAGS) -I$(INC_DIR) -I$(INC_LIBFT) -o $@ $(addprefix $(OUT_DIR)/,$(OBJ)) -L$(LIBDIR) -lft
 
 $(OUT_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
-	@echo "$(PREFIX)$(GREEN) Compiling file $(END)$< $(GREEN)to $(END)$@"
+	@printf "$(PREFIX)$(GREEN) Compiling file $(END)$< $(GREEN)to $(END)$@\n"
 	@mkdir -p $(dir $@)
-	@$(CC++) $(CFLAGS) $(DFLAGS) $(LDFLAGS) -I$(INC_DIR) -I$(INC_LIBFT) -o $@ -c $<
+	@$(CC) $(CFLAGS) $(DFLAGS) -I/usr/include/SDL2 -I$(INC_DIR) -I$(INC_LIBFT) -o $@ -c $<
 
 $(LIBFT):
-	@echo "$(PREFIX)$(GREEN) Bundling $(LIBDIR)...$(END)"
+	@printf "$(PREFIX)$(GREEN) Bundling $(LIBDIR)...$(END)\n"
 	@$(MAKE) -C $(LIBDIR) > /dev/null
 
 clean:
-	@echo "$(PREFIX)$(GREEN) Removing directory $(END)$(OUT_DIR), $(LIBDIR)/out"
+	@printf "$(PREFIX)$(GREEN) Removing directory $(END)$(OUT_DIR), $(LIBDIR)/out\n"
 	@rm -rf $(OUT_DIR)
 	@$(MAKE) -C $(LIBDIR) clean > /dev/null
 
 fclean: clean
-	@echo "$(PREFIX)$(GREEN) Removing file $(END)$(NAME), $(LIBFT)"
+	@printf "$(PREFIX)$(GREEN) Removing file $(END)$(NAME), $(LIBFT)\n"
 	@rm -f $(NAME)
 	@$(MAKE) -C $(LIBDIR) fclean > /dev/null
 
 re: fclean $(NAME)
 
 exec: $(NAME)
-	./$(NAME)
+	./$(NAME) --width=640 --height=480
 
 valgrind: $(NAME)
 	valgrind --undef-value-errors=no --leak-check=full ./$(NAME)
