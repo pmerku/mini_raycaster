@@ -80,11 +80,11 @@ void mouseRelease(SDL_MouseButtonEvent *event, t_raycaster *rc) {
 	}
 }
 
-void mouseMotion(SDL_MouseMotionEvent *event) {
-	if (event->x > 0 && event->x < SCREEN_WIDTH / 2) {
+void mouseMotion(SDL_MouseMotionEvent *event, t_raycaster *rc) {
+	if (event->x > 0 && event->x < rc->screenWidth / 2) {
 		// look left
 	}
-	else if (event->x < SCREEN_WIDTH && event->x > SCREEN_WIDTH / 2) {
+	else if (event->x < rc->screenWidth && event->x > rc->screenWidth / 2) {
 		// look right
 	}
 }
@@ -121,7 +121,7 @@ void mainLoop(t_sdl *sdl, t_raycaster *rc) {
 					mouseRelease(&event.button, rc);
 					break;
 				case SDL_MOUSEMOTION:
-					mouseMotion(&event.motion);
+					mouseMotion(&event.motion, rc);
 					break;
 				case SDL_MOUSEWHEEL:
 					mouseWheel(&event.wheel);

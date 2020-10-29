@@ -23,7 +23,7 @@ int initWindow(t_sdl *sdl) {
 	}
 
 	//Create texture buffer
-	sdl->buffer = SDL_CreateTexture(sdl->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
+	sdl->buffer = SDL_CreateTexture(sdl->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, sdl->screenWidth, sdl->screenHeight);
 	if (sdl->buffer == NULL) {
 		ft_fprintf(STDERR_FILENO, "Texture buffer could not be created! SDL Error: %s\n", SDL_GetError());
 		return EXIT_FAILURE;
