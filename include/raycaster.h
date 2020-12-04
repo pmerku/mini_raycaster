@@ -6,14 +6,15 @@
 
 # include <sys/types.h>
 
+# define ERROR(...) do { \
+    ft_fprintf(STDERR_FILENO, "(%s:%d) ", __FILE__, __LINE__); \
+    ft_fprintf(STDERR_FILENO, __VA_ARGS__); \
+} while(0)
+
+// TODO add exit(EXIT_FAILURE); in ERROR()
+
 # define SCREEN_WIDTH	640
 # define SCREEN_HEIGHT	480
-
-# define NUMBER_OF_LEVELS	2
-# define WALL_TEXTURES		5
-# define WEAPON_TEXTURES	3
-# define AMMO_TEXTURES		3
-# define OBJECT_TEXTURES	4
 
 # define INIT_P_POS_X    22
 # define INIT_P_POS_Y    12
@@ -80,22 +81,43 @@ typedef struct	s_calc {
 	double	posZ;
 }				t_calc;
 
+typedef struct	s_tex {
+	char 		*path;
+	SDL_Texture *tex;
+	char		id;
+}				t_tex;
+
+typedef struct	s_spr {
+	double	x;
+	double	y;
+	double	dist;
+	int		hide:1;
+}				t_spr;
+
+# define WALL_TEXTURES			5
+# define WEAPON_TEXTURES		3
+# define AMMO_TEXTURES			3
+# define PICKUP_TEXTURES		3
+# define OBJECT_TEXTURES		4
+# define DOOR_TEXTURES			2
+# define BACKGROUND_TEXTURES	2
+
 typedef struct	s_level {
-	SDL_Texture *wall[WALL_TEXTURES];
-	SDL_Texture *weapon[WEAPON_TEXTURES];
-	SDL_Texture *ammo[AMMO_TEXTURES];
-	SDL_Texture	*grenade;
-	SDL_Texture	*health;
-	SDL_Texture	*pickup;
-	SDL_Texture	*enemy;
-	SDL_Texture	*boss;
-	SDL_Texture	*objects[OBJECT_TEXTURES];
-	SDL_Texture	*door;
-	SDL_Texture	*hiddenDoor;
-	SDL_Texture	*floor;
-	SDL_Texture	*ceiling;
-	char		**map;
+	t_tex	wall[WALL_TEXTURES];
+	t_tex	weapon[WEAPON_TEXTURES];
+	t_tex	ammo[AMMO_TEXTURES];
+	t_tex	pickup[PICKUP_TEXTURES];
+	t_tex	enemy;
+	t_tex	boss;
+	t_tex	objects[OBJECT_TEXTURES];
+	t_tex	door[DOOR_TEXTURES];
+	t_tex	background[BACKGROUND_TEXTURES];
+	char	**map;
+	double	*zBuffer;
+	t_spr	*sprArray;
 }				t_level;
+
+# define NUMBER_OF_LEVELS	2
 
 typedef struct	s_raycaster {
 	int 	screenWidth;

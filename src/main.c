@@ -27,20 +27,19 @@ static t_raycaster g_rc = {
 		.rot_down = 0
 	}
 };
-#include <ft_stdio/ft_printf.h>
 
 int main(int argc, char **argv) {
 	t_sdl	sdl;
 
 	if (argc > 1) {
-		if (argv[1] != NULL && ft_strncmp(argv[1], "--width=", 8) == 0) {
+		if (argv[1] != NULL && ft_strncmp(argv[1], "--width=", 8) == 0 && (argv[2] + 9) != NULL) {
 			sdl.screenWidth = ft_atoi(argv[1] + 8);
 			if (sdl.screenWidth <= 0) {
 				sdl.screenWidth = SCREEN_WIDTH;
 			}
 			g_rc.screenWidth = sdl.screenWidth;
 		}
-		if (argv[2] != NULL && ft_strncmp(argv[2], "--height=", 9) == 0) {
+		if (argv[2] != NULL && ft_strncmp(argv[2], "--height=", 9) == 0 && (argv[2] + 9) != NULL) {
 			sdl.screenHeight = ft_atoi(argv[2] + 9);
 			if (sdl.screenHeight <= 0) {
 				sdl.screenHeight = SCREEN_HEIGHT;
